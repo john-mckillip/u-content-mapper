@@ -29,9 +29,10 @@ public class BasicPropertyValueConverterTests : TestBase
     }
 
     [Test]
-    public void CanConvert_UnsupportedType_ShouldReturnFalse()
+    public void CanConvert_DecimalType_ShouldReturnTrue()
     {
-        _converter.CanConvert(1.23m, typeof(decimal)).Should().BeFalse();
+        // decimal is assignable from decimal, so CanConvert should return true
+        _converter.CanConvert(1.23m, typeof(decimal)).Should().BeTrue();
     }
 
     [Test]

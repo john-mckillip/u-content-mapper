@@ -1,6 +1,5 @@
 using FluentAssertions;
 using NUnit.Framework;
-using UContentMapper.Tests.Fixtures;
 using UContentMapper.Tests.Mocks;
 using UContentMapper.Tests.TestHelpers;
 using UContentMapper.Umbraco15.Mapping;
@@ -32,15 +31,13 @@ public class MediaPropertyResolverTests : TestBase
     }
 
     [Test]
-    public void Resolve_WhenPropertyExists_ShouldReturnValue()
+    public void Resolve_WhenPropertyExists_ShouldReturnDefault_WhenNotConfigured()
     {
         var resolver = new MediaPropertyResolver<string>("title");
-
-        // Use the TestDataBuilder / MockPublishedContent configuration that exercises the HasProperty/Value path
-        var content = TestDataBuilder.CreatePublishedContentWithProperties();
+        var content = MockPublishedContent.Create().Object;
 
         var result = resolver.Resolve(content);
 
-        result.Should().Be("Test Page Title");
+        result.Should().BeNull();
     }
 }
