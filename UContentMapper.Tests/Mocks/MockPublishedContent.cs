@@ -1,6 +1,7 @@
 using Moq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
 
 namespace UContentMapper.Tests.Mocks;
 
@@ -91,25 +92,23 @@ public class MockPublishedElement
 }
 
 /// <summary>
-/// Mock implementation for MediaWithCrops
+/// Mock helpers for MediaWithCrops
 /// </summary>
 public class MockMediaWithCrops
 {
-    public static Mock<MediaWithCrops> Create()
+    public static MediaWithCrops Create()
     {
-        var mock = new Mock<MediaWithCrops>();
-        var contentMock = MockPublishedContent.Create();
-        
-        mock.Setup(x => x.Content).Returns(contentMock.Object);
-        mock.Setup(x => x.Name).Returns("Test Image");
-        
-        return mock;
+        var content = MockPublishedContent.Create().Object;
+        var publishedValueFallback = new Mock<IPublishedValueFallback>().Object;
+        // Use default crop data; tests do not assert on crop metadata.
+        var cropDataSet = new ImageCropperValue();
+        return new MediaWithCrops(content, publishedValueFallback, cropDataSet);
     }
 
-    public static Mock<MediaWithCrops> WithContent(IPublishedContent content)
+    public static MediaWithCrops WithContent(IPublishedContent content)
     {
-        var mock = Create();
-        mock.Setup(x => x.Content).Returns(content);
-        return mock;
+        var publishedValueFallback = new Mock<IPublishedValueFallback>().Object;
+        var cropDataSet = new ImageCropperValue();
+        return new MediaWithCrops(content, publishedValueFallback, cropDataSet);
     }
 }
