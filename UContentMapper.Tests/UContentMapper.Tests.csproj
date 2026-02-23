@@ -39,7 +39,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UContentMapper.Core\UContentMapper.Core.csproj" />
-    <ProjectReference Include="..\UContentMapper.Extensions\UContentMapper.Extensions.csproj" />
     <ProjectReference Include="..\UContentMapper.Umbraco15\UContentMapper.Umbraco15.csproj" />
   </ItemGroup>
 

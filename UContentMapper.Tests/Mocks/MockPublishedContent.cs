@@ -7,7 +7,7 @@ namespace UContentMapper.Tests.Mocks;
 /// <summary>
 /// Mock implementation and builder for IPublishedContent
 /// </summary>
-public class MockPublishedContent
+public static class MockPublishedContent
 {
     public static Mock<IPublishedContent> Create()
     {
@@ -64,7 +64,7 @@ public class MockPublishedContent
 /// <summary>
 /// Mock implementation for IPublishedElement
 /// </summary>
-public class MockPublishedElement
+public static class MockPublishedElement
 {
     public static Mock<IPublishedElement> Create()
     {

@@ -94,8 +94,6 @@ public class FullMappingIntegrationTests : TestBase
 
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
-        var publishedValueFallbackMock = new Mock<PublishedValueFallback>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
 
         // Set up content type alias
@@ -191,7 +189,6 @@ public class FullMappingIntegrationTests : TestBase
 
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
 
         // Set up content type alias
@@ -205,7 +202,7 @@ public class FullMappingIntegrationTests : TestBase
             { "stringvalue", "Test String Value" },
             { "intvalue", 42 },
             { "boolvalue", true },
-            { "datetimevalue", DateTime.Parse("2023-01-01T10:30:00Z") },
+            { "datetimevalue", new DateTime(2026, 1, 1, 10, 30, 0, DateTimeKind.Utc) },
             { "guidvalue", "12345678-1234-1234-1234-123456789012" },
             { "doublevalue", 3.14159 },
             { "decimalvalue", 999.99m },
@@ -234,7 +231,7 @@ public class FullMappingIntegrationTests : TestBase
         result.StringValue.Should().Be("Test String Value");
         result.IntValue.Should().Be(42);
         result.BoolValue.Should().BeTrue();
-        result.DateTimeValue.Should().Be(DateTime.Parse("2023-01-01T10:30:00Z"));
+        result.DateTimeValue.Should().Be(new DateTime(2026, 1, 1, 10, 30, 0, DateTimeKind.Utc));
         result.GuidValue.Should().Be(new Guid("12345678-1234-1234-1234-123456789012"));
         result.DoubleValue.Should().BeApproximately(3.14159, 0.00001);
         result.DecimalValue.Should().Be(999.99m);
@@ -253,7 +250,6 @@ public class FullMappingIntegrationTests : TestBase
 
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
 
         // Set up content type alias
@@ -322,7 +318,6 @@ public class FullMappingIntegrationTests : TestBase
         // Arrange
         var pageMapper = _serviceProvider.GetRequiredService<IContentMapper<TestPageModel>>();
         var simpleMapper = _serviceProvider.GetRequiredService<IContentMapper<SimpleTestModel>>();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
 
         // Create page content
@@ -377,8 +372,6 @@ public class FullMappingIntegrationTests : TestBase
 
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
-
         // Set up content type alias
         var contentTypeMock = new Mock<IPublishedContentType>();
         contentTypeMock.Setup(x => x.Alias).Returns("testPage");
@@ -422,7 +415,6 @@ public class FullMappingIntegrationTests : TestBase
 
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
 
         // Set up content type alias
@@ -470,8 +462,8 @@ public class FullMappingIntegrationTests : TestBase
         content.Setup(x => x.Id).Returns(5000);
         content.Setup(x => x.Key).Returns(new Guid("11111111-2222-3333-4444-555555555555"));
         content.Setup(x => x.Name).Returns("Complex Test Page");
-        content.Setup(x => x.CreateDate).Returns(new DateTime(2023, 1, 1));
-        content.Setup(x => x.UpdateDate).Returns(new DateTime(2023, 6, 15));
+        content.Setup(x => x.CreateDate).Returns(new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        content.Setup(x => x.UpdateDate).Returns(new DateTime(2023, 6, 15, 0, 0, 0, DateTimeKind.Utc));
         content.Setup(x => x.Level).Returns(3);
         content.Setup(x => x.SortOrder).Returns(10);
         content.Setup(x => x.TemplateId).Returns(7777);
@@ -506,8 +498,8 @@ public class FullMappingIntegrationTests : TestBase
         result.Key.Should().Be(new Guid("11111111-2222-3333-4444-555555555555"));
         result.Name.Should().Be("Complex Test Page");
         result.ContentTypeAlias.Should().Be("testPage");
-        result.CreateDate.Should().Be(new DateTime(2023, 1, 1));
-        result.UpdateDate.Should().Be(new DateTime(2023, 6, 15));
+        result.CreateDate.Should().Be(new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        result.UpdateDate.Should().Be(new DateTime(2023, 6, 15, 0, 0, 0, DateTimeKind.Utc));
         result.Level.Should().Be(3);
         result.SortOrder.Should().Be(10);
         result.TemplateId.Should().Be(7777);
