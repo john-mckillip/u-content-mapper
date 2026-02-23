@@ -7,7 +7,7 @@ namespace UContentMapper.Tests.Mocks;
 /// <summary>
 /// Mock implementation and builder for IPublishedContent
 /// </summary>
-public class MockPublishedContent
+public static class MockPublishedContent
 {
     public static Mock<IPublishedContent> Create()
     {
@@ -26,11 +26,11 @@ public class MockPublishedContent
         mock.Setup(x => x.SortOrder).Returns(0);
         mock.Setup(x => x.TemplateId).Returns(1234);
         mock.Setup(x => x.Properties).Returns(propertiesMock.Object);
-        
+
         // Set up content type
         contentTypeMock.Setup(x => x.Alias).Returns("testPage");
         contentTypeMock.Setup(x => x.Id).Returns(1100);
-        
+
         return mock;
     }
 
@@ -64,19 +64,19 @@ public class MockPublishedContent
 /// <summary>
 /// Mock implementation for IPublishedElement
 /// </summary>
-public class MockPublishedElement
+public static class MockPublishedElement
 {
     public static Mock<IPublishedElement> Create()
     {
         var mock = new Mock<IPublishedElement>();
         var contentTypeMock = new Mock<IPublishedContentType>();
-        
+
         mock.Setup(x => x.Key).Returns(Guid.NewGuid());
         mock.Setup(x => x.ContentType).Returns(contentTypeMock.Object);
-        
+
         contentTypeMock.Setup(x => x.Alias).Returns("testElement");
         contentTypeMock.Setup(x => x.Id).Returns(2000);
-        
+
         return mock;
     }
 
@@ -90,26 +90,3 @@ public class MockPublishedElement
     }
 }
 
-/// <summary>
-/// Mock implementation for MediaWithCrops
-/// </summary>
-public class MockMediaWithCrops
-{
-    public static Mock<MediaWithCrops> Create()
-    {
-        var mock = new Mock<MediaWithCrops>();
-        var contentMock = MockPublishedContent.Create();
-        
-        mock.Setup(x => x.Content).Returns(contentMock.Object);
-        mock.Setup(x => x.Name).Returns("Test Image");
-        
-        return mock;
-    }
-
-    public static Mock<MediaWithCrops> WithContent(IPublishedContent content)
-    {
-        var mock = Create();
-        mock.Setup(x => x.Content).Returns(content);
-        return mock;
-    }
-}

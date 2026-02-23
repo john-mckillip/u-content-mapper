@@ -20,11 +20,11 @@ public class FullMappingIntegrationTests : TestBase
     public override void SetUp()
     {
         base.SetUp();
-        
+
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddUContentMapper();
-        
+
         _serviceProvider = services.BuildServiceProvider();
     }
 
@@ -91,11 +91,9 @@ public class FullMappingIntegrationTests : TestBase
     {
         // Arrange
         var mapper = _serviceProvider.GetRequiredService<IContentMapper<TestPageModel>>();
-        
+
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
-        var publishedValueFallbackMock = new Mock<PublishedValueFallback>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
 
         // Set up content type alias
@@ -113,14 +111,14 @@ public class FullMappingIntegrationTests : TestBase
             { "ispublished", true },
             { "publishdate", DateTime.UtcNow.AddDays(-5) }
         };
-        
+
         foreach (var prop in properties)
         {
             var propertyMock = new Mock<IPublishedProperty>();
             propertyMock.Setup(x => x.Alias).Returns(prop.Key);
             propertyMock.Setup(x => x.HasValue(It.IsAny<string>(), It.IsAny<string>())).Returns(prop.Value is not null);
             propertyMock.Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<string>())).Returns(prop.Value);
-            
+
             mock.Setup(x => x.GetProperty(prop.Key)).Returns(propertyMock.Object);
             mock.Setup(x => x.ContentType.GetPropertyType(prop.Key)).Returns(publishedPropertyTypeMock.Object);
         }
@@ -140,14 +138,57 @@ public class FullMappingIntegrationTests : TestBase
     }
 
     [Test]
+    public void EndToEndMapping_WhenMappedPropertyExists_ShouldResolveStringValue()
+    {
+        // Arrange
+        var mapper = _serviceProvider.GetRequiredService<IContentMapper<TestPageModel>>();
+        var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
+        var content = MockPublishedContent.Create();
+
+        var contentTypeMock = new Mock<IPublishedContentType>();
+        contentTypeMock.Setup(x => x.Alias).Returns("testPage");
+        content.Setup(x => x.ContentType).Returns(contentTypeMock.Object);
+        content.Setup(x => x.ContentType.GetPropertyType("title")).Returns(publishedPropertyTypeMock.Object);
+
+        var titlePropertyMock = new Mock<IPublishedProperty>();
+        titlePropertyMock.Setup(x => x.Alias).Returns("title");
+        titlePropertyMock.Setup(x => x.HasValue(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+        titlePropertyMock.Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<string>())).Returns("Resolved By Integration");
+        content.Setup(x => x.GetProperty("title")).Returns(titlePropertyMock.Object);
+
+        // Act
+        var result = mapper.Map(content.Object);
+
+        // Assert
+        result.Title.Should().Be("Resolved By Integration");
+    }
+
+    [Test]
+    public void EndToEndMapping_WhenMappedPropertyIsMissing_ShouldKeepDefaultStringValue()
+    {
+        // Arrange
+        var mapper = _serviceProvider.GetRequiredService<IContentMapper<TestPageModel>>();
+        var content = MockPublishedContent.Create();
+
+        var contentTypeMock = new Mock<IPublishedContentType>();
+        contentTypeMock.Setup(x => x.Alias).Returns("testPage");
+        content.Setup(x => x.ContentType).Returns(contentTypeMock.Object);
+
+        // Act
+        var result = mapper.Map(content.Object);
+
+        // Assert
+        result.Title.Should().BeEmpty();
+    }
+
+    [Test]
     public void EndToEndMapping_TypeConversion_ShouldMapSuccessfully()
     {
         // Arrange
         var mapper = _serviceProvider.GetRequiredService<IContentMapper<TypeConversionTestModel>>();
-        
+
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
 
         // Set up content type alias
@@ -161,7 +202,7 @@ public class FullMappingIntegrationTests : TestBase
             { "stringvalue", "Test String Value" },
             { "intvalue", 42 },
             { "boolvalue", true },
-            { "datetimevalue", DateTime.Parse("2023-01-01T10:30:00Z") },
+            { "datetimevalue", new DateTime(2026, 1, 1, 10, 30, 0, DateTimeKind.Utc) },
             { "guidvalue", "12345678-1234-1234-1234-123456789012" },
             { "doublevalue", 3.14159 },
             { "decimalvalue", 999.99m },
@@ -170,14 +211,14 @@ public class FullMappingIntegrationTests : TestBase
             { "shortvalue", 32767 },
             { "nullablehtmlcontentvalue", new HtmlEncodedString("{<p>This is some test html from a WYSIWYG editor.</p>}")}
         };
-        
+
         foreach (var prop in properties)
         {
             var propertyMock = new Mock<IPublishedProperty>();
             propertyMock.Setup(x => x.Alias).Returns(prop.Key);
             propertyMock.Setup(x => x.HasValue(It.IsAny<string>(), It.IsAny<string>())).Returns(prop.Value != null);
             propertyMock.Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<string>())).Returns(prop.Value);
-            
+
             mock.Setup(x => x.GetProperty(prop.Key)).Returns(propertyMock.Object);
             mock.Setup(x => x.ContentType.GetPropertyType(prop.Key)).Returns(publishedPropertyTypeMock.Object);
         }
@@ -190,7 +231,7 @@ public class FullMappingIntegrationTests : TestBase
         result.StringValue.Should().Be("Test String Value");
         result.IntValue.Should().Be(42);
         result.BoolValue.Should().BeTrue();
-        result.DateTimeValue.Should().Be(DateTime.Parse("2023-01-01T10:30:00Z"));
+        result.DateTimeValue.Should().Be(new DateTime(2026, 1, 1, 10, 30, 0, DateTimeKind.Utc));
         result.GuidValue.Should().Be(new Guid("12345678-1234-1234-1234-123456789012"));
         result.DoubleValue.Should().BeApproximately(3.14159, 0.00001);
         result.DecimalValue.Should().Be(999.99m);
@@ -206,23 +247,22 @@ public class FullMappingIntegrationTests : TestBase
     {
         // Arrange
         var mapper = _serviceProvider.GetRequiredService<IContentMapper<WildcardContentTypeModel>>();
-        
+
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
 
         // Set up content type alias
         var contentTypeMock = new Mock<IPublishedContentType>();
         contentTypeMock.Setup(x => x.Alias).Returns("anyContentType");
         mock.Setup(x => x.ContentType).Returns(contentTypeMock.Object);
-        
+
         // Set up custom property
         var propertyMock = new Mock<IPublishedProperty>();
         propertyMock.Setup(x => x.Alias).Returns("customproperty");
         propertyMock.Setup(x => x.HasValue(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
         propertyMock.Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<string>())).Returns("Custom Value");
-        
+
         mock.Setup(x => x.GetProperty("customproperty")).Returns(propertyMock.Object);
         mock.Setup(x => x.ContentType.GetPropertyType("customproperty")).Returns(publishedPropertyTypeMock.Object);
 
@@ -241,7 +281,7 @@ public class FullMappingIntegrationTests : TestBase
     {
         // Arrange
         var mapper = _serviceProvider.GetRequiredService<IContentMapper<TestPageModel>>();
-        
+
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
         var contentTypeMock = new Mock<IPublishedContentType>();
@@ -278,7 +318,6 @@ public class FullMappingIntegrationTests : TestBase
         // Arrange
         var pageMapper = _serviceProvider.GetRequiredService<IContentMapper<TestPageModel>>();
         var simpleMapper = _serviceProvider.GetRequiredService<IContentMapper<SimpleTestModel>>();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
 
         // Create page content
@@ -293,9 +332,9 @@ public class FullMappingIntegrationTests : TestBase
         titlePropertyMock.Setup(x => x.Alias).Returns("title");
         titlePropertyMock.Setup(x => x.HasValue(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
         titlePropertyMock.Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<string>())).Returns("Page Title");
-        
+
         pageMock.Setup(x => x.GetProperty("title")).Returns(titlePropertyMock.Object);
-            
+
         // Create simple content
         var simpleMock = MockPublishedContent.Create();
         var simpleContentTypeMock = new Mock<IPublishedContentType>();
@@ -308,7 +347,7 @@ public class FullMappingIntegrationTests : TestBase
         emailPropertyMock.Setup(x => x.Alias).Returns("email");
         emailPropertyMock.Setup(x => x.HasValue(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
         emailPropertyMock.Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<string>())).Returns("test@example.com");
-        
+
         simpleMock.Setup(x => x.GetProperty("email")).Returns(emailPropertyMock.Object);
 
         // Act
@@ -330,16 +369,14 @@ public class FullMappingIntegrationTests : TestBase
     {
         // Arrange
         var mapper = _serviceProvider.GetRequiredService<IContentMapper<TestPageModel>>();
-        
+
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
-        
         // Set up content type alias
         var contentTypeMock = new Mock<IPublishedContentType>();
         contentTypeMock.Setup(x => x.Alias).Returns("testPage");
         mock.Setup(x => x.ContentType).Returns(contentTypeMock.Object);
-        
+
         // Set up properties with null/empty values
         var properties = new Dictionary<string, object?>
         {
@@ -348,14 +385,14 @@ public class FullMappingIntegrationTests : TestBase
             { "categoryid", null! },
             { "ispublished", null! }
         };
-        
+
         foreach (var prop in properties)
         {
             var propertyMock = new Mock<IPublishedProperty>();
             propertyMock.Setup(x => x.Alias).Returns(prop.Key);
             propertyMock.Setup(x => x.HasValue(It.IsAny<string>(), It.IsAny<string>())).Returns(false); // All are null or empty
             propertyMock.Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<string>())).Returns(prop.Value);
-            
+
             mock.Setup(x => x.GetProperty(prop.Key)).Returns(propertyMock.Object);
         }
 
@@ -375,10 +412,9 @@ public class FullMappingIntegrationTests : TestBase
     {
         // Arrange
         var mapper = _serviceProvider.GetRequiredService<IContentMapper<TestPageModel>>();
-        
+
         // Create content mock with properties
         var mock = MockPublishedContent.Create();
-        var fallbackMock = new Mock<IPublishedValueFallback>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
 
         // Set up content type alias
@@ -393,14 +429,14 @@ public class FullMappingIntegrationTests : TestBase
             { "categoryid", "not_a_number" }, // This should fail conversion
             { "description", "Valid Description" }
         };
-        
+
         foreach (var prop in properties)
         {
             var propertyMock = new Mock<IPublishedProperty>();
             propertyMock.Setup(x => x.Alias).Returns(prop.Key);
             propertyMock.Setup(x => x.HasValue(It.IsAny<string>(), It.IsAny<string>())).Returns(prop.Value != null);
             propertyMock.Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<string>())).Returns(prop.Value);
-            
+
             mock.Setup(x => x.GetProperty(prop.Key)).Returns(propertyMock.Object);
             mock.Setup(x => x.ContentType.GetPropertyType(prop.Key)).Returns(publishedPropertyTypeMock.Object);
         }
@@ -421,32 +457,32 @@ public class FullMappingIntegrationTests : TestBase
         // Arrange
         var mapper = _serviceProvider.GetRequiredService<IContentMapper<TestPageModel>>();
         var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
-        
+
         var content = MockPublishedContent.Create();
         content.Setup(x => x.Id).Returns(5000);
         content.Setup(x => x.Key).Returns(new Guid("11111111-2222-3333-4444-555555555555"));
         content.Setup(x => x.Name).Returns("Complex Test Page");
-        content.Setup(x => x.CreateDate).Returns(new DateTime(2023, 1, 1));
-        content.Setup(x => x.UpdateDate).Returns(new DateTime(2023, 6, 15));
+        content.Setup(x => x.CreateDate).Returns(new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        content.Setup(x => x.UpdateDate).Returns(new DateTime(2023, 6, 15, 0, 0, 0, DateTimeKind.Utc));
         content.Setup(x => x.Level).Returns(3);
         content.Setup(x => x.SortOrder).Returns(10);
         content.Setup(x => x.TemplateId).Returns(7777);
-        
+
         var contentTypeMock = new Mock<IPublishedContentType>();
         contentTypeMock.Setup(x => x.Alias).Returns("testPage");
         content.Setup(x => x.ContentType).Returns(contentTypeMock.Object);
-        
+
         // Setup properties
         var titlePropMock = new Mock<IPublishedProperty>();
         titlePropMock.Setup(x => x.Alias).Returns("title");
         titlePropMock.Setup(x => x.HasValue(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
         titlePropMock.Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<string>())).Returns("Complex Title");
-        
+
         var descPropMock = new Mock<IPublishedProperty>();
         descPropMock.Setup(x => x.Alias).Returns("description");
         descPropMock.Setup(x => x.HasValue(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
         descPropMock.Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<string>())).Returns("Complex Description");
-        
+
         content.Setup(x => x.GetProperty("title")).Returns(titlePropMock.Object);
         content.Setup(x => x.GetProperty("description")).Returns(descPropMock.Object);
 
@@ -462,8 +498,8 @@ public class FullMappingIntegrationTests : TestBase
         result.Key.Should().Be(new Guid("11111111-2222-3333-4444-555555555555"));
         result.Name.Should().Be("Complex Test Page");
         result.ContentTypeAlias.Should().Be("testPage");
-        result.CreateDate.Should().Be(new DateTime(2023, 1, 1));
-        result.UpdateDate.Should().Be(new DateTime(2023, 6, 15));
+        result.CreateDate.Should().Be(new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        result.UpdateDate.Should().Be(new DateTime(2023, 6, 15, 0, 0, 0, DateTimeKind.Utc));
         result.Level.Should().Be(3);
         result.SortOrder.Should().Be(10);
         result.TemplateId.Should().Be(7777);
