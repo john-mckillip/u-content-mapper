@@ -26,11 +26,11 @@ public class MockPublishedContent
         mock.Setup(x => x.SortOrder).Returns(0);
         mock.Setup(x => x.TemplateId).Returns(1234);
         mock.Setup(x => x.Properties).Returns(propertiesMock.Object);
-        
+
         // Set up content type
         contentTypeMock.Setup(x => x.Alias).Returns("testPage");
         contentTypeMock.Setup(x => x.Id).Returns(1100);
-        
+
         return mock;
     }
 
@@ -70,13 +70,13 @@ public class MockPublishedElement
     {
         var mock = new Mock<IPublishedElement>();
         var contentTypeMock = new Mock<IPublishedContentType>();
-        
+
         mock.Setup(x => x.Key).Returns(Guid.NewGuid());
         mock.Setup(x => x.ContentType).Returns(contentTypeMock.Object);
-        
+
         contentTypeMock.Setup(x => x.Alias).Returns("testElement");
         contentTypeMock.Setup(x => x.Id).Returns(2000);
-        
+
         return mock;
     }
 
@@ -90,22 +90,3 @@ public class MockPublishedElement
     }
 }
 
-/// <summary>
-/// Mock helpers for MediaWithCrops - returns null since we can't easily mock this class
-/// </summary>
-public class MockMediaWithCrops
-{
-    public static MediaWithCrops? Create()
-    {
-        // MediaWithCrops doesn't have a parameterless constructor and is difficult to mock.
-        // Return null so tests can verify null-handling behavior.
-        return null;
-    }
-
-    public static MediaWithCrops? WithContent(IPublishedContent content)
-    {
-        // MediaWithCrops doesn't have a parameterless constructor and is difficult to mock.
-        // Return null so tests can verify null-handling behavior.
-        return null;
-    }
-}

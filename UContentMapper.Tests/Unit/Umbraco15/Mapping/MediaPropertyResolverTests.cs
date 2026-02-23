@@ -1,8 +1,10 @@
 using FluentAssertions;
+using Moq;
 using NUnit.Framework;
 using UContentMapper.Tests.Mocks;
 using UContentMapper.Tests.TestHelpers;
 using UContentMapper.Umbraco15.Mapping;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace UContentMapper.Tests.Unit.Umbraco15.Mapping;
 
@@ -31,13 +33,15 @@ public class MediaPropertyResolverTests : TestBase
     }
 
     [Test]
-    public void Resolve_WhenPropertyExists_ShouldReturnDefault_WhenNotConfigured()
+    public void Resolve_WhenPropertyExistsAndUmbracoValueFallbackIsUnavailable_ShouldThrowTypeInitializationException()
     {
         var resolver = new MediaPropertyResolver<string>("title");
-        var content = MockPublishedContent.Create().Object;
+        var contentMock = MockPublishedContent.Create();
+        var publishedPropertyTypeMock = new Mock<IPublishedPropertyType>();
+        contentMock.Setup(x => x.ContentType.GetPropertyType("title")).Returns(publishedPropertyTypeMock.Object);
 
-        var result = resolver.Resolve(content);
+        var action = () => resolver.Resolve(contentMock.Object);
 
-        result.Should().BeNull();
+        action.Should().Throw<TypeInitializationException>();
     }
 }

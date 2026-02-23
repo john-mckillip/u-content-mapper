@@ -22,8 +22,6 @@ Install the core library and Umbraco integration via NuGet:
  dotnet add package UContentMapper.Core
 # Umbraco 15 integration
  dotnet add package UContentMapper.Umbraco15
-# Extensions (optional)
- dotnet add package UContentMapper.Extensions
 ```
 
 ## Usage
