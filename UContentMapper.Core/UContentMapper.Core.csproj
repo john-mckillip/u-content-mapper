@@ -4,6 +4,11 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <PackageId>UContentMapper.Core</PackageId>
+    <Description>Core abstractions and mapping engine for UContentMapper.</Description>
+    <AssemblyTitle>UContentMapper.Core</AssemblyTitle>
+    <PackageTags>umbraco;content-mapping;mapping;cms;core</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
