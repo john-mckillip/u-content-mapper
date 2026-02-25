@@ -265,6 +265,8 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Push to NuGet
+      env: 
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: |
         shopt -s nullglob
 
@@ -272,7 +274,7 @@ jobs:
           echo "Pushing $package to NuGet..."
           dotnet nuget push "$package" \
             --source https://api.nuget.org/v3/index.json \
-            --api-key "${{ secrets.NUGET_API_KEY }}" \
+            --api-key "$NUGET_API_KEY" \
             --skip-duplicate
         done
 
@@ -280,6 +282,6 @@ jobs:
           echo "Pushing symbols package $symbolPackage to NuGet..."
           dotnet nuget push "$symbolPackage" \
             --source https://api.nuget.org/v3/index.json \
-            --api-key "${{ secrets.NUGET_API_KEY }}" \
+            --api-key "$NUGET_API_KEY" \
             --skip-duplicate
         done
