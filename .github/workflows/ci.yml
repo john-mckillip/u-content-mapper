@@ -144,9 +144,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build solution
-      run: dotnet build --no-restore --configuration Release
-
     - name: Determine package version
       id: package-version
       run: |
@@ -161,12 +158,15 @@ jobs:
         fi
         echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
+    - name: Build solution
+      run: dotnet build --no-restore --configuration Release /p:Version=${{ steps.package-version.outputs.value }} /p:PackageVersion=${{ steps.package-version.outputs.value }}
+
     - name: Pack NuGet packages
       run: |
-        dotnet pack UContentMapper.Core/UContentMapper.Core.csproj --no-build --configuration Release --output ./packages /p:PackageVersion=${{ steps.package-version.outputs.value }}
-        dotnet pack UContentMapper.Umbraco15/UContentMapper.Umbraco15.csproj --no-build --configuration Release --output ./packages /p:PackageVersion=${{ steps.package-version.outputs.value }}
-        # dotnet pack UContentMapper.Umbraco17/UContentMapper.Umbraco17.csproj --no-build --configuration Release --output ./packages /p:PackageVersion=${{ steps.package-version.outputs.value }}
-
+        dotnet pack UContentMapper.Core/UContentMapper.Core.csproj --no-build --configuration Release --output ./packages /p:Version=${{ steps.package-version.outputs.value }} /p:PackageVersion=${{ steps.package-version.outputs.value }}
+        dotnet pack UContentMapper.Umbraco15/UContentMapper.Umbraco15.csproj --no-build --configuration Release --output ./packages /p:Version=${{ steps.package-version.outputs.value }} /p:PackageVersion=${{ steps.package-version.outputs.value }}
+        # dotnet pack UContentMapper.Umbraco17/UContentMapper.Umbraco17.csproj --no-build --configuration Release --output ./packages /p:Version=${{ steps.package-version.outputs.value }} /p:PackageVersion=${{ steps.package-version.outputs.value }}
+        
     - name: Upload packages
       uses: actions/upload-artifact@v4
       with:
@@ -264,8 +264,25 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: Validate NuGet API key
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: |
+        if [[ -z "$NUGET_API_KEY" ]]; then
+          echo "NUGET_API_KEY secret is not set."
+          exit 1
+        fi
+
+    - name: Add deploy summary
+      run: |
+        VERSION="${GITHUB_REF#refs/tags/v}"
+        echo "## NuGet Deploy Summary" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Version: $VERSION" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Source: https://api.nuget.org/v3/index.json" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Packages path: ./packages" >> "$GITHUB_STEP_SUMMARY"
+
     - name: Push to NuGet
-      env: 
+      env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: |
         shopt -s nullglob

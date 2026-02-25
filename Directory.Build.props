@@ -2,7 +2,6 @@
   <PropertyGroup>
     <Authors>UContentMapper Contributors</Authors>
     <Company>UContentMapper</Company>
-    <Version>0.1.0</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>

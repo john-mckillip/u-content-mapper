@@ -12,6 +12,6 @@ This folder is a starter scaffold for the Umbraco 17 adapter package.
 
 ## Notes
 
-- This starter targets `.NET 10` (`net10.0`) by default.
+- This starter targets `.NET 10` (`net10.0`) by default; ensure your local SDK and CI/tooling are updated to .NET 10, or retarget the project to `.NET 9.0` (`net9.0`) to match the current repo before adding it to the solution and CI.
 - The project is intentionally not part of the solution yet.
 - `Umbraco.Cms.*` versions are placeholders and must be aligned with your selected Umbraco 17 release.
