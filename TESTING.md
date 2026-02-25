@@ -67,6 +67,7 @@ UContentMapper.Tests/
 #### Option 1: Using Test Scripts (Recommended)
 
 **Linux/macOS:**
+
 ```bash
 # Run all tests with default settings
 ./scripts/test.sh
@@ -79,6 +80,7 @@ UContentMapper.Tests/
 ```
 
 **Windows:**
+
 ```powershell
 # Run all tests with default settings
 .\scripts\test.ps1
@@ -159,11 +161,13 @@ Coverage is configured in `coverlet.runsettings` and includes:
 **Purpose**: Test individual components in isolation
 
 **Examples**:
+
 - `BaseContentModelTests`: Tests base model properties and behavior
 - `UmbracoContentMapperTests`: Tests mapping logic without external dependencies
 - `TypePairTests`: Tests type pair equality and hashing
 
 **Characteristics**:
+
 - Fast execution (< 100ms per test)
 - No external dependencies
 - Use mocks for dependencies
@@ -174,10 +178,12 @@ Coverage is configured in `coverlet.runsettings` and includes:
 **Purpose**: Test component interactions and end-to-end workflows
 
 **Examples**:
+
 - `ServiceCollectionExtensionsIntegrationTests`: Tests DI container registration
 - `FullMappingIntegrationTests`: Tests complete mapping workflows
 
 **Characteristics**:
+
 - Slower execution (< 1s per test)
 - Test real component interactions
 - Use actual implementations where possible
@@ -188,11 +194,13 @@ Coverage is configured in `coverlet.runsettings` and includes:
 **Purpose**: Test multiple scenarios with different inputs
 
 **Examples**:
+
 - `ParametrizedMappingTests`: Tests mapping with various content types and values
 - Type conversion tests with multiple data types
 - Content type alias matching tests
 
 **Characteristics**:
+
 - Data-driven testing
 - Comprehensive scenario coverage
 - Reduce test duplication
@@ -205,29 +213,33 @@ Coverage is configured in `coverlet.runsettings` and includes:
 The CI/CD pipeline (`/.github/workflows/ci.yml`) includes:
 
 1. **Test Stage**:
+
    - Run all tests with coverage
    - Generate coverage reports
    - Upload to Codecov
    - Comment coverage on PRs
 
 2. **Build Stage**:
+
    - Build solution in Release mode
    - Package NuGet packages
    - Upload build artifacts
 
 3. **Security Stage**:
+
    - Run security vulnerability scans
    - CodeQL analysis
    - Dependency audits
 
 4. **Quality Gate**:
+
    - Verify all stages passed
    - Enforce quality standards
    - Block deployment if quality gate fails
 
-5. **Deploy Stage** (main branch only):
-   - Deploy packages to NuGet
-   - Create GitHub releases
+5. **Deploy Stage** (release tags only):
+   - Deploy packages to NuGet on `vX.Y.Z` tags
+   - Publish `.nupkg` and `.snupkg` artifacts
 
 ### Quality Gates
 
@@ -251,9 +263,9 @@ Tests must pass these quality gates:
 public void MethodName_WithSpecificCondition_ShouldExpectedBehavior()
 {
     // Arrange
-    
+
     // Act
-    
+
     // Assert
 }
 ```
@@ -357,6 +369,7 @@ var contentMock = MockPublishedContent
 ### Common Issues
 
 #### Tests Not Running
+
 ```bash
 # Clear NuGet cache
 dotnet nuget locals all --clear
@@ -369,6 +382,7 @@ dotnet build --no-incremental
 ```
 
 #### Coverage Not Generated
+
 ```bash
 # Check if coverlet is installed
 dotnet list package | grep coverlet
@@ -381,6 +395,7 @@ dotnet test --verbosity detailed
 ```
 
 #### IDE Integration Issues
+
 ```bash
 # Clear VS Code cache
 rm -rf .vscode/
@@ -401,6 +416,7 @@ Ctrl+Shift+P -> "Developer: Reload Window"
 ### Coverage Reports
 
 Coverage reports include:
+
 - Line-by-line coverage visualization
 - Branch coverage analysis
 - Method coverage statistics
@@ -410,6 +426,7 @@ Coverage reports include:
 ### Test Reports
 
 Test reports provide:
+
 - Test execution results
 - Performance metrics
 - Test duration analysis
@@ -419,6 +436,7 @@ Test reports provide:
 ### Quality Metrics
 
 Quality metrics tracked:
+
 - Code coverage percentage
 - Test execution time
 - Build success rate

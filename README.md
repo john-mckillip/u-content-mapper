@@ -11,7 +11,7 @@ UContentMapper is a modern, flexible .NET library for mapping content models, de
 - **Comprehensive Testing**: 100% code coverage, including unit, integration, and edge case tests.
 - **Mocking Infrastructure**: Built-in mocks for Umbraco content and elements for reliable test scenarios.
 - **Coverage Reporting**: Integrated with Coverlet and Codecov for coverage enforcement and reporting.
-- **CI/CD Pipeline**: Automated testing, coverage, security scanning, and NuGet deployment via GitHub Actions.
+- **CI/CD Pipeline**: Automated testing, coverage, security scanning, packaging, and tag-driven NuGet deployment via GitHub Actions.
 
 ## Installation
 
@@ -102,6 +102,24 @@ dotnet test --collect:"XPlat Code Coverage"
 - Automated pipeline with stages for testing, building, security scanning, quality gate, and deployment.
 - Coverage enforcement (90% minimum in CI, 100% target locally).
 - Codecov integration for coverage tracking and PR comments.
+- NuGet publish is tag-driven: create a `vX.Y.Z` git tag to publish release packages.
+
+## Release and Package Strategy
+
+- `UContentMapper.Core` is the stable core package.
+- Umbraco integration is versioned per major, starting with `UContentMapper.Umbraco15`.
+- New Umbraco majors should ship as new adapter packages (for example, `UContentMapper.Umbraco16` and `UContentMapper.Umbraco17`).
+
+Create a release package version by tagging:
+
+```sh
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+Detailed release steps are in [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md).
+
+For future Umbraco majors, use the scaffolds in [templates/UContentMapper.Umbraco16](templates/UContentMapper.Umbraco16) and [templates/UContentMapper.Umbraco17](templates/UContentMapper.Umbraco17).
 
 ## Contributing
 

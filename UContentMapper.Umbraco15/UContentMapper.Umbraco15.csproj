@@ -4,19 +4,17 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+		<IsPackable>true</IsPackable>
+		<PackageId>UContentMapper.Umbraco15</PackageId>
+		<Description>Umbraco 15 integration package for UContentMapper.</Description>
+		<AssemblyTitle>UContentMapper.Umbraco15</AssemblyTitle>
+		<PackageTags>umbraco;content-mapping;mapping;cms;umbraco15</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="Umbraco.Cms.Core" Version="15.4.2">
-		  <PrivateAssets>all</PrivateAssets>
-		  <ExcludeAssets>runtime; build; native; contentfiles; analyzers</ExcludeAssets>
-		  <IncludeAssets>compile</IncludeAssets>
-	  </PackageReference>
-	  <PackageReference Include="Umbraco.Cms.Web.Common" Version="15.4.2">
-		  <PrivateAssets>all</PrivateAssets>
-		  <ExcludeAssets>runtime; build; native; contentfiles; analyzers</ExcludeAssets>
-		  <IncludeAssets>compile</IncludeAssets>
-	  </PackageReference>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<PackageReference Include="Umbraco.Cms.Core" Version="15.4.2" />
+		<PackageReference Include="Umbraco.Cms.Web.Common" Version="15.4.2" />
   </ItemGroup>
 
   <ItemGroup>
