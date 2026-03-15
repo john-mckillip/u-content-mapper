@@ -1,6 +1,6 @@
 # UContentMapper
 
-UContentMapper is a modern, flexible .NET library for mapping content models, designed to simplify and automate the mapping of Umbraco CMS content and other .NET objects. It provides a robust, testable infrastructure for mapping, conversion, and configuration, supporting advanced scenarios and integration with Umbraco 15 and beyond.
+UContentMapper is a modern, flexible .NET library for mapping content models, designed to simplify and automate the mapping of Umbraco CMS content and other .NET objects. It provides a robust, testable infrastructure for mapping, conversion, and configuration, supporting advanced scenarios and integration with Umbraco 15 and beyond. Inspired by Andy Butland's [Anaximapper](https://github.com/AndyButland/Anaximapper), which works for lower versions of Umbraco
 
 ## Features
 
