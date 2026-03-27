@@ -2,10 +2,10 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ release/1.x ]
     tags: [ 'v*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ release/1.x ]
 
 env:
   DOTNET_VERSION: '9.0.x'
