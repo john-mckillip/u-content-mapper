@@ -2,13 +2,12 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 'release/v1.x' ]
     tags: [ 'v*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, 'release/v1.x' ]
 
 env:
-  DOTNET_VERSION: '9.0.x'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
   DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
 
@@ -32,7 +31,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: |
+          9.0.x
+          10.0.x
 
     - name: Cache NuGet packages
       uses: actions/cache@v4
@@ -131,7 +132,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: |
+          9.0.x
+          10.0.x
 
     - name: Cache NuGet packages
       uses: actions/cache@v4
@@ -164,8 +167,7 @@ jobs:
     - name: Pack NuGet packages
       run: |
         dotnet pack UContentMapper.Core/UContentMapper.Core.csproj --no-build --configuration Release --output ./packages /p:Version=${{ steps.package-version.outputs.value }} /p:PackageVersion=${{ steps.package-version.outputs.value }}
-        dotnet pack UContentMapper.Umbraco15/UContentMapper.Umbraco15.csproj --no-build --configuration Release --output ./packages /p:Version=${{ steps.package-version.outputs.value }} /p:PackageVersion=${{ steps.package-version.outputs.value }}
-        # dotnet pack UContentMapper.Umbraco17/UContentMapper.Umbraco17.csproj --no-build --configuration Release --output ./packages /p:Version=${{ steps.package-version.outputs.value }} /p:PackageVersion=${{ steps.package-version.outputs.value }}
+        dotnet pack UContentMapper.Umbraco17/UContentMapper.Umbraco17.csproj --no-build --configuration Release --output ./packages /p:Version=${{ steps.package-version.outputs.value }} /p:PackageVersion=${{ steps.package-version.outputs.value }}
         
     - name: Upload packages
       uses: actions/upload-artifact@v4
@@ -193,7 +195,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: |
+          9.0.x
+          10.0.x
 
     - name: Restore dependencies
       run: dotnet restore
@@ -262,7 +266,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: |
+          9.0.x
+          10.0.x
 
     - name: Validate NuGet API key
       env:

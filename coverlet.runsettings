@@ -6,7 +6,7 @@
         <Configuration>
           <Format>cobertura,lcov,opencover</Format>
           <Exclude>
-            [*.Tests]*
+            [*.Tests.*]*
             [*]System.*
             [AutoFixture]*
             [Moq]*
@@ -19,14 +19,10 @@
             **/Fixtures/*.cs
           </ExcludeByFile>
           <Include>
-            [UContentMapper.Core]*
-            [UContentMapper.Umbraco15]*
-            [UContentMapper.Extensions]*
+            [UContentMapper.Umbraco17]*
           </Include>
           <IncludeDirectory>
-            ../UContentMapper.Core/
-            ../UContentMapper.Umbraco15/
-            ../UContentMapper.Extensions/
+            ../UContentMapper.Umbraco17/
           </IncludeDirectory>
           <SingleHit>false</SingleHit>
           <UseSourceLink>true</UseSourceLink>
