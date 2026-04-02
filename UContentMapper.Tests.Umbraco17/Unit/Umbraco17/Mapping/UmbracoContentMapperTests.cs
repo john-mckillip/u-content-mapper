@@ -95,7 +95,7 @@ public class UmbracoContentMapperTests : TestBase
     }
 
     [Test]
-    public void Map_WithNullContent_ShouldThrowArgumentNullException()
+    public void Map_WithNullContent_ShouldThrowNullReferenceException()
     {
         // Arrange
         var mapper = _createMapper<TestPageModel>();
@@ -436,7 +436,7 @@ public class UmbracoContentMapperTests : TestBase
                     {
                         if (kvp.Key.Equals("categoryid", StringComparison.OrdinalIgnoreCase))
                         {
-                            logger.LogWarning($"Error mapping property {kvp.Key} for content type", kvp.Key);
+                            logger.LogWarning("Error mapping property {PropertyKey} for content type", kvp.Key);
                         }
                         else
                         {
