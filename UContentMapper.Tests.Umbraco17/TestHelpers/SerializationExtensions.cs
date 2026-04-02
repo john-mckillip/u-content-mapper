@@ -1,6 +1,6 @@
 using FluentAssertions;
-using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
+using NUnit.Framework;
 using System.Text.Json;
 
 namespace UContentMapper.Tests.Umbraco17.TestHelpers
@@ -31,23 +31,16 @@ namespace UContentMapper.Tests.Umbraco17.TestHelpers
                 IncludeFields = true
             };
 
-            Execute.Assertion
-                .BecauseOf(because, becauseArgs)
-                .Given(() =>
-                {
-                    try
-                    {
-                        string json = JsonSerializer.Serialize(subject, options);
-                        var deserializedObject = JsonSerializer.Deserialize<T>(json, options);
-                        return deserializedObject != null;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new AssertionFailedException($"Expected {typeof(T).Name} to be JSON serializable, but serialization failed with: \"{ex.Message}\".");
-                    }
-                })
-                .ForCondition(result => result)
-                .FailWith("Expected {0} to be JSON serializable, but it was not.", subject);
+            try
+            {
+                string json = JsonSerializer.Serialize(subject, options);
+                var deserializedObject = JsonSerializer.Deserialize<T>(json, options);
+                deserializedObject.Should().NotBeNull(because, becauseArgs);
+            }
+            catch (Exception ex)
+            {
+                throw new AssertionException($"Expected {typeof(T).Name} to be JSON serializable, but serialization failed with: \"{ex.Message}\".");
+            }
 
             return new AndConstraint<ObjectAssertions>(assertions);
         }
