@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 #Claude code local settings
 .claude/settings.local.json
+/.github/copilot-instructions.md
