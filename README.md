@@ -1,6 +1,6 @@
 # UContentMapper
 
-UContentMapper is a modern, flexible .NET library for mapping content models, designed to simplify and automate the mapping of Umbraco CMS content and other .NET objects. It provides a robust, testable infrastructure for mapping, conversion, and configuration, supporting advanced scenarios and integration with Umbraco 15 and beyond. Inspired by Andy Butland's [Anaximapper](https://github.com/AndyButland/Anaximapper), which works for lower versions of Umbraco.
+UContentMapper is a modern, flexible .NET library for mapping content models, designed to simplify and automate the mapping of Umbraco CMS content and other .NET objects. It provides a robust, testable infrastructure for mapping, conversion, and configuration, supporting advanced scenarios and integration with Umbraco 15, 17 and beyond. Note: There are no plans to support Umbraco 16. Inspired by Andy Butland's [Anaximapper](https://github.com/AndyButland/Anaximapper), which works for older versions of Umbraco.
 
 ## Features
 
@@ -20,8 +20,8 @@ Install the core library and Umbraco integration via NuGet:
 ```sh
 # Core library
  dotnet add package UContentMapper.Core
-# Umbraco 15 integration
- dotnet add package UContentMapper.Umbraco15
+# Umbraco 17 integration
+ dotnet add package UContentMapper.Umbraco17
 ```
 
 ## Usage
@@ -59,7 +59,7 @@ public class PageMappingConfiguration : MappingConfigurationBase<PageModel>
 }
 ```
 
-### 3. Register Services (Umbraco 15 Example)
+### 3. Register Services (Umbraco 17 Example)
 
 Register mappers and configurations in your DI container:
 
@@ -108,7 +108,7 @@ dotnet test --collect:"XPlat Code Coverage"
 
 - `UContentMapper.Core` is the stable core package.
 - Umbraco integration is versioned per major, starting with `UContentMapper.Umbraco15`.
-- New Umbraco majors should ship as new adapter packages (for example, `UContentMapper.Umbraco16` and `UContentMapper.Umbraco17`).
+- New Umbraco majors should ship as new adapter packages (for example, `UContentMapper.Umbraco17`).
 
 Create a release package version by tagging:
 
